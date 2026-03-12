@@ -1,4 +1,4 @@
-import Utils from "./util.js";
+import Render from "./render.js";
 
 const SIZE = 3;
 const EMPTY = -1;
@@ -162,4 +162,4 @@ const Game = (function() {
   };
 })();
 
-console.log(Game.playGame());
+//console.log(Game.playGame());

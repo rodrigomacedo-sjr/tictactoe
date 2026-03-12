@@ -1,3 +1,66 @@
-h1 {
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#board-root {
+  width: 40vw;
+  aspect-ratio: 1 / 1;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  justify-items: stretch;
+  align-items: stretch;
+  gap: 20px;
+
+  padding: 20px;
+  background-color: black;
+}
+
+.cell {
+  display: flex;
+
+  position: relative;
+
+  background-color: white;
+}
+
+.x-symbol-a, .x-symbol-b, .o-symbol-a, .o-symbol-b {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.x-symbol-a, .x-symbol-b{
+  width: 90%;
+  height: 1rem;
+
   background-color: red;
+}
+
+.x-symbol-a {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.x-symbol-b {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.o-symbol-a, .o-symbol-b {
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  border: 1rem solid blue;
+}
+
+@media screen and (max-width: 600px) {
+  #board-root {
+    width: 95vw;
+    gap: 10px;
+    padding: 10px;
+  }
 }
