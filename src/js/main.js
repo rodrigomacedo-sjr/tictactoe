@@ -6,6 +6,8 @@ const EMPTY = -1;
 const GameBoard = (function() {
   const board = Array.from({ length: SIZE }, () => new Array(SIZE).fill(EMPTY));
 
+  const getBoard = () => board;
+
   const reset = function() {
     for (let i = 0; i < SIZE; ++i) {
       board[i].fill(EMPTY);
@@ -92,6 +94,7 @@ const GameBoard = (function() {
   };
 
   return {
+    getBoard,
     reset,
     play,
     checkWin,
@@ -100,11 +103,21 @@ const GameBoard = (function() {
 })();
 
 const Input = (function() {
+  const takeTurnInput = function(event) {
+    const c = event.target.closest(".cell");
+    const row = c.dataset.row;
+    const col = c.dataset.col;
+    Game.playTurn(row, col);
+  };
+
+  const prepareBoard = () => {
+    const board = document.querySelector("#board-root");
+    board.addEventListener("click", takeTurnInput);
+  };
+
   return {
-    getPlay: () => {
-      const raw = prompt("{r} {c}:");
-      return raw.split(" ").map((n) => Number(n));
-    },
+    takeTurnInput,
+    prepareBoard,
   };
 })();
 
@@ -118,48 +131,68 @@ const createPlayer = function(id, name) {
 const Game = (function() {
   const players = [createPlayer(0, "Riri"), createPlayer(1, "Roger")];
 
-  const changePlayer = function(idx, newName) {
-    if (!(idx === 0 || idx === 1)) {
-      return false;
-    }
-    players[idx].name = newName;
-    return true;
-  };
+  let turn = 0,
+    round = 0;
 
-  const playGame = function() {
-    GameBoard.reset();
+  const changeTurn = () => (turn = turn ? 0 : 1);
+  const updateRound = () => ++round;
 
-    let turn = 0,
-      round = 0;
+  const playTurn = function(r, c) {
+    const success = GameBoard.play(r, c, players[turn].getId()).success;
+    if (!success) return;
+    changeTurn();
+    updateRound();
 
-    while (!GameBoard.checkWin().end && round < SIZE * SIZE) {
-      let success = false;
-      while (!success) {
-        let [r, c] = Input.getPlay();
-        success = GameBoard.play(r, c, players[turn].getId()).success;
-      }
-      console.clear();
-      console.log("round: ", round);
-      GameBoard.printToConsole();
-      ++round;
-      turn = turn ? 0 : 1;
-    }
+    Render.clearScreen();
+    Render.drawBoard(GameBoard.getBoard(), turn);
+
+    Input.prepareBoard();
 
     const result = GameBoard.checkWin();
     if (result.end) {
-      return {
-        outcome: players[result.winner].getName() + " won",
-      };
-    } else {
-      return {
-        outcome: "draw",
-      };
+      gameOver({
+        outcome: "win",
+        winner: result.winner,
+      });
+      return;
+    }
+
+    if (round >= SIZE * SIZE) {
+      gameOver({ outcome: "draw" });
+      return;
+    }
+  };
+
+  const restart = function() {
+    round = 0;
+    Render.clearScreen();
+    GameBoard.reset();
+    Render.drawBoard(GameBoard.getBoard(), turn);
+    Input.prepareBoard();
+  };
+
+  const gameOver = function(result) {
+    const board = document.querySelector("#board-root");
+    board.removeEventListener("click", Input.takeTurnInput);
+    switch (result.outcome) {
+      case "draw":
+        Render.resultDraw();
+        break;
+      case "win":
+        const winnerName = players[result.winner].getName();
+        Render.resultWin(winnerName);
+        break;
     }
   };
 
   return {
-    playGame,
+    playTurn,
+    restart,
   };
 })();
 
-//console.log(Game.playGame());
+document
+  .querySelector("#restart-button")
+  .addEventListener("click", Game.restart);
+
+Game.restart();

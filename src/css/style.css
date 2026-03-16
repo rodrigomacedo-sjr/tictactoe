@@ -28,14 +28,19 @@ body {
   background-color: white;
 }
 
-.x-symbol-a, .x-symbol-b, .o-symbol-a, .o-symbol-b {
+.x-symbol-a,
+.x-symbol-b,
+.o-symbol-a,
+.o-symbol-b,
+.middle-man {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.x-symbol-a, .x-symbol-b{
+.x-symbol-a,
+.x-symbol-b {
   width: 90%;
   height: 1rem;
 
@@ -50,17 +55,114 @@ body {
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-.o-symbol-a, .o-symbol-b {
+.o-symbol-a,
+.o-symbol-b {
   width: 60%;
   height: 60%;
   border-radius: 50%;
   border: 1rem solid blue;
 }
 
+.middle-man {
+  width: 100%;
+  height: 100%;
+}
+
+.available-empty {
+  opacity: 0%;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.available-empty:hover {
+  opacity: 40%;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.wall {
+  width: 100%;
+  height: 100%;
+  background-color: hsla(0, 0, 0, 0);
+}
+
+#restart-button {
+  height: 3rem;
+  width: 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px;
+  margin: 20px;
+  background-color: red;
+
+  transition: transform 0.5s ease-in-out;
+}
+
+#restart-button:hover {
+  transform: scale(110%);
+  opacity: 0.8;
+  transition: transform 0.5s ease-in-out;
+}
+
+.invisible {
+  width: 0px;
+  height: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(0, 0, 0, 0);
+}
+
+.win-card,
+.draw-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  font-size: 3.5rem;
+  width: 60vw;
+  height: 30vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 900;
+  border: 2px solid black;
+}
+
+.draw-card {
+  background-color: rgba(255, 240, 58, 0.9);
+  color: black;
+}
+
+.win-card {
+  background-color: rgba(154, 205, 50, 0.9);
+  color: white;
+}
+
 @media screen and (max-width: 600px) {
   #board-root {
-    width: 95vw;
+    width: 90vw;
     gap: 10px;
     padding: 10px;
+  }
+
+  .win-card,
+  .draw-card {
+    height: 10vh;
+    font-size: 1.3rem;
+  }
+
+  body {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  #restart-button {
+    position: absolute;
+    top: 1%;
+    left: 95%;
   }
 }
